@@ -1,0 +1,23 @@
+# ==============================================================================
+# AI Creations Portfolio - Clean LiteSpeed / Apache Configuration for Hostinger
+# Subdomain: portfolio.harshaicreations.com
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+</IfModule>
+
+# Enable Global CORS for Vercel Frontend & Subdomains
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-Auth-Token"
+</IfModule>
+
+# Handle Preflight OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Security Headers & Index Protection
+Options -Indexes
