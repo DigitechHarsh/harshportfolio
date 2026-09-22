@@ -32,7 +32,7 @@ export default function Hero() {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden py-28 sm:py-32"
+      className="relative min-h-screen flex items-center overflow-hidden pt-36 pb-24 sm:pt-40 sm:pb-28"
     >
       {/* Background Orbs */}
       <div className="absolute inset-0 pointer-events-none">
@@ -64,11 +64,11 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-12 gap-8 xl:gap-16 items-center">
+      {/* Content Container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full grid lg:grid-cols-12 gap-12 lg:gap-8 xl:gap-16 items-center">
         
         {/* Left - Text & Telemetry (7 columns) */}
-        <div className="lg:col-span-7 flex flex-col gap-6 sm:gap-8 text-center lg:text-left">
+        <div className="lg:col-span-7 flex flex-col gap-6 sm:gap-7 text-center lg:text-left items-center lg:items-start">
           
           {/* Availability Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.01] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),_0_4px_10px_rgba(0,0,0,0.4)] text-xs font-bold tracking-wider uppercase text-white/70 animate-fade-in-up">
@@ -80,9 +80,9 @@ export default function Hero() {
           </div>
 
           {/* Heading */}
-          <h1 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-7xl font-black leading-[1.05] tracking-tight text-white">
+          <h1 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight text-white max-w-2xl">
             Crafting <span className="gradient-text">AI-Powered</span>
-            <span className="block mt-2">
+            <span className="block mt-1 sm:mt-2">
               Video{" "}
               <span className="relative inline-block">
                 Magic
@@ -115,12 +115,12 @@ export default function Hero() {
           </h1>
 
           {/* Description Paragraph */}
-          <p className="text-lg text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+          <p className="text-base sm:text-lg text-white/60 max-w-xl leading-relaxed font-medium">
             Transforming brands with cinematic AI video advertisements and breathtaking cinematic teasers. Powered by next-generation neural design models.
           </p>
 
           {/* Glowing Tool Chips */}
-          <div className="flex flex-wrap gap-2 justify-center lg:justify-start pt-2">
+          <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
             {[
               { name: "Veo 3.1", color: "text-violet-400 border-violet-500/25 bg-violet-500/5 hover:border-violet-400/40" },
               { name: "Seedance 2.0", color: "text-cyan-400 border-cyan-500/25 bg-cyan-500/5 hover:border-cyan-400/40" },
@@ -130,7 +130,7 @@ export default function Hero() {
             ].map(t => (
               <div
                 key={t.name}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-xs font-bold tracking-wide shadow-sm transition-all duration-300 cursor-default ${t.color}`}
+                className={`flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full border text-xs font-bold tracking-wide shadow-sm transition-all duration-300 cursor-default ${t.color}`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
                 {t.name}
@@ -139,37 +139,37 @@ export default function Hero() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
+          <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-1">
             <button
               onClick={() => scrollTo("ai-ads")}
-              className="btn-3d px-10 py-4 rounded-full text-white font-bold text-xs tracking-wider uppercase cursor-pointer shadow-lg"
+              className="btn-3d px-9 py-3.5 sm:px-10 sm:py-4 rounded-full text-white font-bold text-xs tracking-wider uppercase cursor-pointer shadow-lg"
             >
               View My Work
             </button>
             <button
               onClick={() => scrollTo("contact")}
-              className="btn-3d-secondary px-10 py-4 rounded-full text-white/80 font-bold text-xs tracking-wider uppercase cursor-pointer"
+              className="btn-3d-secondary px-9 py-3.5 sm:px-10 sm:py-4 rounded-full text-white/80 font-bold text-xs tracking-wider uppercase cursor-pointer"
             >
               Get in Touch
             </button>
           </div>
 
           {/* Stats Telemetry Dashboard */}
-          <div className="glass-3d p-6 rounded-2xl border border-white/5 shadow-xl max-w-lg mx-auto lg:mx-0 pt-5">
+          <div className="glass-3d p-5 sm:p-6 rounded-2xl border border-white/5 shadow-xl w-full max-w-lg mt-2">
             <div className="text-[10px] font-black tracking-widest text-white/30 uppercase mb-4 flex items-center gap-2 justify-center lg:justify-start">
               <span className="led-indicator led-green" /> Telemetry Data Readout
             </div>
-            <div className="grid grid-cols-3 gap-6 divide-x divide-white/5">
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 divide-x divide-white/5">
               {[
                 { value: "18+", label: "Completed Projects" },
                 { value: "10+", label: "AI Video Ads" },
                 { value: "8+", label: "Cinematic Teasers" },
               ].map((stat, i) => (
-                <div key={stat.label} className={`text-center ${i > 0 ? "pl-4 sm:pl-6" : ""}`}>
-                  <div className="font-[family-name:var(--font-outfit)] text-2xl sm:text-3xl font-black bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent">
+                <div key={stat.label} className={`text-center ${i > 0 ? "pl-2 sm:pl-6" : ""}`}>
+                  <div className="font-[family-name:var(--font-outfit)] text-2xl sm:text-3xl font-black bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent">
                     {stat.value}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-white/40 uppercase tracking-wider font-semibold mt-1.5 leading-tight">{stat.label}</div>
+                  <div className="text-[9px] sm:text-[10px] text-white/40 uppercase tracking-wider font-semibold mt-1 leading-tight">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -178,7 +178,7 @@ export default function Hero() {
 
         {/* Right - Interactive 3D HUD aperture container (5 columns) */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end">
-          <div className="relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] xl:w-[380px] xl:h-[380px] flex items-center justify-center group">
+          <div className="relative w-[270px] h-[270px] sm:w-[330px] sm:h-[330px] xl:w-[370px] xl:h-[370px] flex items-center justify-center group">
             {/* Ambient Back Glow */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-violet-600/15 via-cyan-500/10 to-fuchsia-500/15 opacity-60 blur-3xl pointer-events-none" />
 
@@ -186,23 +186,20 @@ export default function Hero() {
             <div className="absolute inset-0 border border-dashed border-cyan-500/20 rounded-full animate-hud-spin pointer-events-none" />
             
             {/* HUD Outer Technical Ring 2 (Rotating Counter-Clockwise) */}
-            <div className="absolute inset-4 border border-double border-violet-500/15 rounded-full animate-hud-spin-reverse pointer-events-none" />
+            <div className="absolute inset-3.5 border border-double border-violet-500/15 rounded-full animate-hud-spin-reverse pointer-events-none" />
             
             {/* HUD Target Marks */}
-            <div className="absolute inset-8 border border-white/5 rounded-full flex items-center justify-between pointer-events-none opacity-30">
+            <div className="absolute inset-7 border border-white/5 rounded-full flex items-center justify-between pointer-events-none opacity-30">
               <div className="w-4 h-px bg-cyan-400" />
               <div className="w-4 h-px bg-cyan-400" />
             </div>
-            <div className="absolute inset-8 border border-white/5 rounded-full flex flex-col items-center justify-between pointer-events-none opacity-30">
+            <div className="absolute inset-7 border border-white/5 rounded-full flex flex-col items-center justify-between pointer-events-none opacity-30">
               <div className="w-px h-4 bg-cyan-400" />
               <div className="w-px h-4 bg-cyan-400" />
             </div>
 
             {/* Center Camera Lens Assembly */}
-            <div className="relative w-56 h-56 sm:w-72 sm:h-72 xl:w-80 xl:h-80 rounded-full p-2 bg-gradient-to-b from-neutral-800 to-neutral-950 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8),_inset_0_2px_5px_rgba(255,255,255,0.1)] flex items-center justify-center overflow-hidden">
-              {/* Aperture ring */}
-              <div className="absolute inset-2 rounded-full border border-black/85 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] pointer-events-none" />
-
+            <div className="relative w-52 h-52 sm:w-68 sm:h-68 xl:w-76 xl:h-76 rounded-full p-2 bg-gradient-to-b from-neutral-800 to-neutral-950 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8),_inset_0_2px_5px_rgba(255,255,255,0.1)] flex items-center justify-center overflow-hidden">
               {/* Picture Mask */}
               <div className="relative w-full h-full rounded-full overflow-hidden border border-black/95">
                 <Image
@@ -231,11 +228,14 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-bounce cursor-pointer" onClick={() => scrollTo("ai-ads")}>
+      <div 
+        className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-1.5 text-white/30 hover:text-white/70 transition-colors animate-bounce cursor-pointer z-10" 
+        onClick={() => scrollTo("ai-ads")}
+      >
         <span className="text-[10px] tracking-widest uppercase font-bold">Scroll Down</span>
         <svg
-          width="16"
-          height="16"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

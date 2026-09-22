@@ -60,7 +60,7 @@ export default function VideoGallery({
       <section
         id={id}
         ref={sectionRef}
-        className="relative py-24 sm:py-32 overflow-hidden"
+        className="relative py-28 sm:py-36 overflow-hidden scroll-mt-24"
       >
         {/* Background glow */}
         <div
@@ -70,10 +70,10 @@ export default function VideoGallery({
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
           {/* Section Header */}
           <div
-            className={`text-center mb-16 transition-all duration-1000 ${
+            className={`text-center mb-16 sm:mb-20 transition-all duration-1000 ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
@@ -94,23 +94,23 @@ export default function VideoGallery({
             <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl lg:text-6xl font-black mb-4">
               <span className="gradient-text">{sectionTitle}</span>
             </h2>
-            <p className="text-white/50 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
+            <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-lg font-medium leading-relaxed">
               {sectionSubtitle}
             </p>
           </div>
 
           {/* Video Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {videos.map((video, i) => (
               <div
-                key={video.src}
+                key={`${video.src}-${i}`}
                 className={`transition-all duration-700 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-12"
                 }`}
                 style={{
-                  transitionDelay: `${i * 100 + 200}ms`,
+                  transitionDelay: `${(i % 6) * 80 + 150}ms`,
                 }}
               >
                 <VideoCard
