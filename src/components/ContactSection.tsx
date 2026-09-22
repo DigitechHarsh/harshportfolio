@@ -1,219 +1,303 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-const contactInfo = [
-  {
-    icon: (
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-      >
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-      </svg>
-    ),
-    label: "Phone",
-    value: "+91-8160587315",
-    href: "tel:+918160587315",
-  },
-  {
-    icon: (
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-      >
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-    label: "Email",
-    value: "aicreationsbyharsh@gmail.com",
-    href: "mailto:aicreationsbyharsh@gmail.com",
-  },
-  {
-    icon: (
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-      >
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    ),
-    label: "Address",
-    value: "A-5, Shivam Appartment, Nehru Nagar, Ichchhanath, Surat-395007",
-    href: "https://maps.google.com/?q=Ichchhanath+Surat",
-  },
-];
+import { useState } from "react";
+import { submitContactInquiry } from "@/lib/api";
 
 export default function ContactSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [service, setService] = useState("AI Commercial Ad");
+  const [budget, setBudget] = useState("₹50k - ₹1.5L");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatusMsg(null);
+
+    const fullMessage = `Service: ${service}\nBudget: ${budget}\n\n${message}`;
+    const res = await submitContactInquiry({
+      name,
+      email,
+      phone,
+      subject: service,
+      message: fullMessage,
+    });
+
+    setLoading(false);
+    if (res.success) {
+      setStatusMsg({
+        type: "success",
+        text: "Thank you! Your project inquiry has been received. Harsh will get back to you within 24 hours.",
+      });
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+    } else {
+      setStatusMsg({
+        type: "error",
+        text: res.message || "Something went wrong. Please reach out directly on WhatsApp or Email.",
+      });
+    }
+  };
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="relative py-24 sm:py-32 overflow-hidden"
-    >
-      {/* Top divider */}
+    <section id="contact" className="relative py-28 sm:py-36 overflow-hidden scroll-mt-28">
+      {/* Background Glow */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full pointer-events-none opacity-20"
         style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, rgba(6,182,212,0.3) 50%, transparent 100%)",
+          background: "radial-gradient(circle, rgba(6,182,212,0.3) 0%, transparent 65%)",
         }}
       />
 
-      {/* Background glow */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
+        
         {/* Section Header */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
-        >
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-12 h-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500" />
-            <span className="text-xs font-semibold tracking-[0.3em] uppercase text-white/40">
-              Get in Touch
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span className="text-[10px] font-black tracking-widest uppercase text-white/60">
+              COMMISSION A PRODUCTION
             </span>
-            <div className="w-12 h-0.5 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500" />
           </div>
-          <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl lg:text-6xl font-black mb-4">
-            <span className="gradient-text">Let&apos;s Create Together</span>
+
+          <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">
+            Let&apos;s Build <span className="gradient-text-hero">Something Epic</span>
           </h2>
-          <p className="text-white/40 max-w-2xl mx-auto text-lg font-medium">
-            Ready to bring your vision to life with AI-powered video? Hook into our terminal port.
+          <p className="text-white/60 text-base sm:text-lg font-medium leading-relaxed">
+            Have a commercial campaign, concept trailer, or brand vision in mind? Let&apos;s turn your ideas into cinematic AI masterpieces.
           </p>
         </div>
 
-        {/* Unified Dashboard Console Container */}
-        <div
-          className={`max-w-4xl mx-auto glass-3d p-6 sm:p-10 rounded-3xl border border-white/5 shadow-2xl transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0 scale-100"
-              : "opacity-0 translate-y-8 scale-95"
-          }`}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+        {/* 2-Column Luxury Layout */}
+        <div className="grid lg:grid-cols-12 gap-8 xl:gap-12 items-start">
+          
+          {/* Left Column (5 cols): Direct Contacts & WhatsApp Fast Lane */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
             
-            {/* Left Column: Sockets / Ports (7 columns) */}
-            <div className="md:col-span-7 space-y-4 flex flex-col justify-between">
-              <div className="text-[10px] font-black tracking-widest text-white/30 uppercase flex items-center gap-2 mb-2 justify-center sm:justify-start">
-                <span className="led-indicator led-cyan" /> COMM_PORTS ACTIVE
+            {/* WhatsApp Quick Chat Highlight Card */}
+            <a
+              href="https://wa.me/918160587315?text=Hi%20Harsh,%20I'm%20interested%20in%20an%20AI%20video%20production%20project!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass-panel p-6 sm:p-7 rounded-3xl border border-emerald-500/30 hover:border-emerald-400/60 transition-all duration-300 group shadow-2xl relative overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl">
+                  💬
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black tracking-wider uppercase border border-emerald-500/40 animate-pulse">
+                  FASTEST RESPONSE
+                </span>
               </div>
+              <h3 className="font-[family-name:var(--font-outfit)] text-xl font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
+                Chat Directly on WhatsApp
+              </h3>
+              <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-medium mb-3">
+                Need immediate quotes, script breakdowns, or urgent project deliveries?
+              </p>
+              <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <span>+91 81605 87315</span>
+                <span>→</span>
+              </div>
+            </a>
 
-              {contactInfo.map((info, i) => (
+            {/* Email Card */}
+            <div className="glass-panel p-6 rounded-3xl border border-white/10 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 text-2xl shrink-0">
+                ✉️
+              </div>
+              <div className="min-w-0">
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                  OFFICIAL INQUIRY
+                </div>
                 <a
-                  key={info.label}
-                  href={info.href}
-                  target={info.label === "Address" ? "_blank" : undefined}
-                  rel={info.label === "Address" ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-neutral-900/60 hover:bg-neutral-900 border border-white/5 hover:border-violet-500/25 transition-all duration-300 group cursor-pointer shadow-md"
+                  href="mailto:aicreationsbyharsh@gmail.com"
+                  className="font-bold text-sm sm:text-base text-white hover:text-cyan-300 transition-colors truncate block"
                 >
-                  {/* Socket Bevel */}
-                  <div className="w-10 h-10 rounded-lg bg-neutral-950 border border-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.8),_0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center text-violet-400 group-hover:text-cyan-400 transition-colors">
-                    {info.icon}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase text-white/40 tracking-wider">
-                        {info.label}
-                      </span>
-                      <span className={`led-indicator ${
-                        info.label === "Phone" ? "led-green" : info.label === "Email" ? "led-violet" : "led-cyan"
-                      }`} />
-                    </div>
-                    <p className={`text-white/70 text-xs sm:text-sm font-semibold mt-0.5 ${info.label === "Address" ? "break-words" : "truncate"}`}>
-                      {info.value}
-                    </p>
-                  </div>
+                  aicreationsbyharsh@gmail.com
                 </a>
-              ))}
+              </div>
             </div>
 
-            {/* Divider Line on Desktop */}
-            <div className="hidden md:block w-px bg-white/5 self-stretch my-2 col-span-1 justify-self-center" />
+            {/* Location & Turnaround Badge */}
+            <div className="glass-panel p-6 rounded-3xl border border-white/10 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-2xl shrink-0">
+                🌍
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                  STUDIO LOCATION &amp; TURNAROUND
+                </div>
+                <div className="font-bold text-sm text-white">
+                  Surat, Gujarat, India • Global 24/7 Delivery
+                </div>
+              </div>
+            </div>
+          </div>
 
-            {/* Right Column: Tactile Launcher (4 columns) */}
-            <div className="md:col-span-4 flex flex-col justify-between items-center text-center py-4">
-              <div className="text-[10px] font-black tracking-widest text-white/30 uppercase mb-4 md:mb-0">
-                INITIATE_UPLINK
+          {/* Right Column (7 cols): Full Project Inquiry Form */}
+          <div className="lg:col-span-7">
+            <form
+              onSubmit={handleSubmit}
+              className="glass-panel p-6 sm:p-10 rounded-3xl border border-white/15 shadow-2xl flex flex-col gap-6"
+            >
+              <div className="border-b border-white/10 pb-4">
+                <h3 className="font-[family-name:var(--font-outfit)] text-xl sm:text-2xl font-black text-white">
+                  Project Briefing Form
+                </h3>
+                <p className="text-xs sm:text-sm text-white/50 font-medium mt-1">
+                  Fill out your details below to receive a personalized proposal and timeline.
+                </p>
               </div>
 
-              {/* Launcher trigger core */}
-              <div className="relative w-28 h-28 flex items-center justify-center">
-                {/* Rotating HUD circle behind trigger */}
-                <div className="absolute inset-0 border border-dashed border-cyan-500/20 rounded-full animate-hud-spin" />
-                <div className="absolute inset-2 border border-white/5 rounded-full" />
-                
-                {/* Reactor Core Indicator */}
-                <div className="w-16 h-16 rounded-full bg-neutral-950 border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] flex items-center justify-center">
-                  <span className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 animate-pulse flex items-center justify-center">
-                    <span className="w-3 h-3 rounded-full bg-cyan-400 led-cyan shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
-                  </span>
+              {/* Service Selection Chips */}
+              <div>
+                <label className="block text-xs font-black text-white/60 uppercase tracking-wider mb-2.5">
+                  I Am Interested In:
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "AI Commercial Ad",
+                    "Cinematic Teaser & Film",
+                    "3D Product Visuals",
+                    "AI Music Video / VFX",
+                    "Full Campaign Package",
+                  ].map((srv) => (
+                    <button
+                      type="button"
+                      key={srv}
+                      onClick={() => setService(srv)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-300 cursor-pointer ${
+                        service === srv
+                          ? "bg-gradient-to-r from-violet-600 to-cyan-500 text-white border border-white/20 shadow-md"
+                          : "bg-white/[0.03] text-white/60 border border-white/10 hover:border-white/20 hover:text-white"
+                      }`}
+                    >
+                      {srv}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Massive physical launching button */}
-              <a
-                href="mailto:aicreationsbyharsh@gmail.com"
-                className="btn-3d w-full py-4 px-6 rounded-xl text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-lg cursor-pointer"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
+              {/* Budget Range Selection Chips */}
+              <div>
+                <label className="block text-xs font-black text-white/60 uppercase tracking-wider mb-2.5">
+                  Estimated Budget Range:
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "₹20k - ₹50k",
+                    "₹50k - ₹1.5L",
+                    "₹1.5L - ₹3.5L",
+                    "₹3.5L+ (Enterprise)",
+                  ].map((bg) => (
+                    <button
+                      type="button"
+                      key={bg}
+                      onClick={() => setBudget(bg)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-300 cursor-pointer ${
+                        budget === bg
+                          ? "bg-white/20 text-white border border-white/30 shadow-md"
+                          : "bg-white/[0.03] text-white/60 border border-white/10 hover:border-white/20 hover:text-white"
+                      }`}
+                    >
+                      {bg}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name & Email Fields */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
+                    Your Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. John Doe / Brand Manager"
+                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="john@company.com"
+                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Phone Field */}
+              <div>
+                <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
+                  Phone / WhatsApp (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
+                />
+              </div>
+
+              {/* Message Field */}
+              <div>
+                <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
+                  Project Details / Vision *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Describe your product, target audience, reference style or key timeline goals..."
+                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors resize-none"
+                />
+              </div>
+
+              {/* Feedback Status Alert */}
+              {statusMsg && (
+                <div
+                  className={`p-4 rounded-2xl text-xs font-bold ${
+                    statusMsg.type === "success"
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                      : "bg-red-500/20 text-red-300 border border-red-500/40"
+                  }`}
                 >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-                <span>UPLINK NOW</span>
-              </a>
-            </div>
+                  {statusMsg.text}
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary-glow w-full py-4 rounded-full text-xs font-black tracking-widest uppercase cursor-pointer shadow-xl disabled:opacity-50"
+              >
+                {loading ? "Sending Brief..." : "Submit Project Brief →"}
+              </button>
+            </form>
           </div>
+
         </div>
+
       </div>
     </section>
   );

@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const navLinks = [
   { label: "Home", href: "#hero" },
-  { label: "AI Ads", href: "#ai-ads" },
-  { label: "AI Teasers", href: "#ai-teasers" },
-  { label: "Tools", href: "#tools" },
+  { label: "AI Commercials", href: "#ai-ads" },
+  { label: "Teasers & Films", href: "#ai-teasers" },
+  { label: "Creative Stack", href: "#tools" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -18,23 +19,22 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+      setScrolled(window.scrollY > 20);
 
-      // Check if we are near the bottom of the page to activate Contact section
       const isAtBottom =
         window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 100;
+        document.documentElement.scrollHeight - 120;
       if (isAtBottom) {
         setActive("#contact");
         return;
       }
 
-      const sections = navLinks.map((l) => l.href.slice(1));
+      const sections = ["hero", "ai-ads", "ai-teasers", "tools", "contact"];
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 150) {
+          if (rect.top <= 160) {
             setActive(`#${sections[i]}`);
             break;
           }
@@ -54,99 +54,137 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`floating-nav px-6 py-2 flex items-center justify-between glass-strong border transition-all duration-500 ${
+      className={`floating-navbar px-4 sm:px-6 py-2.5 flex items-center justify-between border transition-all duration-500 ${
         scrolled
-          ? "border-white/15 shadow-[0_15px_40px_rgba(0,0,0,0.8),_inset_0_1px_1px_rgba(255,255,255,0.12)] top-4 bg-black/40"
-          : "border-white/8 shadow-[0_8px_24px_rgba(0,0,0,0.4)] top-6 bg-transparent"
+          ? "bg-neutral-950/80 border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9),_inset_0_1px_1px_rgba(255,255,255,0.15)] top-3"
+          : "bg-neutral-950/40 border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] top-5"
       }`}
     >
-      {/* Logo */}
+      {/* Brand Logo */}
       <a
         href="#hero"
         onClick={(e) => {
           e.preventDefault();
           handleClick("#hero");
         }}
-        className="flex items-center gap-3 group"
+        className="flex items-center gap-3 group cursor-pointer"
       >
-        <div className="relative w-9 h-9 overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-105 border border-white/10 shadow-md">
+        <div className="relative w-9 h-9 overflow-hidden rounded-xl border border-white/15 shadow-md bg-neutral-900 group-hover:border-violet-400/50 transition-all duration-300">
           <Image
             src="/logo.png"
-            alt="AI Creations Logo"
+            alt="Harsh AI Creations"
             fill
             sizes="36px"
-            className="object-contain"
+            className="object-contain p-1"
             priority
           />
         </div>
-        <span className="font-[family-name:var(--font-outfit)] font-black text-base tracking-wider bg-gradient-to-r from-white via-neutral-100 to-cyan-400 bg-clip-text text-transparent group-hover:to-violet-400 transition-all duration-300 hidden sm:inline">
-          AI Creations
-        </span>
+        <div className="flex flex-col">
+          <span className="font-[family-name:var(--font-outfit)] font-black text-sm sm:text-base tracking-wider bg-gradient-to-r from-white via-neutral-100 to-cyan-300 bg-clip-text text-transparent group-hover:to-violet-400 transition-all duration-300">
+            HARSH AI
+          </span>
+          <span className="text-[9px] uppercase font-bold tracking-widest text-white/40 -mt-0.5">
+            CREATIONS
+          </span>
+        </div>
       </a>
 
-      {/* Desktop Nav */}
-      <div className="hidden md:flex items-center gap-1.5 bg-neutral-950/40 p-1 rounded-full border border-white/5">
-        {navLinks.map((link) => (
-          <button
-            key={link.href}
-            onClick={() => handleClick(link.href)}
-            className={`relative px-4 py-1.5 text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 cursor-pointer ${
-              active === link.href
-                ? "text-white"
-                : "text-white/40 hover:text-white/80"
-            }`}
-          >
-            {active === link.href && (
-              <span className="absolute inset-0 bg-white/[0.08] rounded-full border border-white/[0.12] shadow-[inset_0_1px_0_rgba(255,255,255,0.15),_0_2px_4px_rgba(0,0,0,0.2)]" />
-            )}
-            <span className="relative z-10">{link.label}</span>
-          </button>
-        ))}
+      {/* Desktop Navigation Links */}
+      <div className="hidden md:flex items-center gap-1 bg-black/50 p-1.5 rounded-full border border-white/10 shadow-inner">
+        {navLinks.map((link) => {
+          const isActive = active === link.href;
+          return (
+            <button
+              key={link.href}
+              onClick={() => handleClick(link.href)}
+              className={`relative px-4 py-1.5 text-xs font-bold tracking-wider uppercase rounded-full transition-all duration-300 cursor-pointer ${
+                isActive
+                  ? "text-white shadow-sm"
+                  : "text-white/50 hover:text-white/90"
+              }`}
+            >
+              {isActive && (
+                <span className="absolute inset-0 bg-gradient-to-r from-violet-600/30 via-indigo-600/30 to-cyan-500/30 rounded-full border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]" />
+              )}
+              <span className="relative z-10">{link.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Right Action: Let's Talk CTA & Admin Link */}
+      <div className="hidden sm:flex items-center gap-3">
+        <Link
+          href="/admin"
+          className="text-[11px] font-bold tracking-wider uppercase text-white/40 hover:text-white/80 transition-colors px-2.5 py-1 rounded-lg hover:bg-white/5"
+        >
+          Admin
+        </Link>
+        <button
+          onClick={() => handleClick("#contact")}
+          className="btn-primary-glow px-5 py-2 rounded-full text-xs font-black tracking-wider uppercase cursor-pointer"
+        >
+          Let&apos;s Talk
+        </button>
       </div>
 
       {/* Mobile Hamburger */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-full hover:bg-white/5 transition-colors"
+        className="md:hidden relative w-9 h-9 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-full bg-white/5 border border-white/10"
         aria-label="Toggle menu"
       >
         <span
-          className={`w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300 ${
+          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
             menuOpen ? "rotate-45 translate-y-2" : ""
           }`}
         />
         <span
-          className={`w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300 ${
-            menuOpen ? "opacity-0 scale-0" : ""
+          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
+            menuOpen ? "opacity-0" : ""
           }`}
         />
         <span
-          className={`w-5 h-0.5 bg-white/80 rounded-full transition-all duration-300 ${
+          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
             menuOpen ? "-rotate-45 -translate-y-2" : ""
           }`}
         />
       </button>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       <div
-        className={`md:hidden absolute top-full left-0 right-0 glass-strong overflow-hidden transition-all duration-500 rounded-3xl mt-2 border border-white/[0.08] shadow-[0_15px_30px_rgba(0,0,0,0.8)] ${
-          menuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        className={`md:hidden absolute top-full left-0 right-0 overflow-hidden transition-all duration-400 rounded-3xl mt-3 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.95)] ${
+          menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="p-4 flex flex-col gap-2 bg-neutral-950/80 backdrop-blur-2xl">
+        <div className="p-4 flex flex-col gap-2 bg-neutral-950/95 backdrop-blur-3xl">
           {navLinks.map((link) => (
             <button
               key={link.href}
               onClick={() => handleClick(link.href)}
-              className={`text-left px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 ${
+              className={`text-left px-4 py-3 rounded-2xl text-sm font-bold tracking-wide transition-all duration-300 ${
                 active === link.href
-                  ? "text-white bg-white/[0.08] border border-white/[0.08]"
-                  : "text-white/40 hover:text-white/80 hover:bg-white/[0.04]"
+                  ? "text-white bg-gradient-to-r from-violet-600/30 to-cyan-500/30 border border-white/20"
+                  : "text-white/50 hover:text-white hover:bg-white/5"
               }`}
             >
               {link.label}
             </button>
           ))}
+          <div className="pt-2 flex items-center justify-between border-t border-white/10 mt-1 px-2">
+            <Link
+              href="/admin"
+              className="text-xs font-bold text-white/50 hover:text-white"
+            >
+              🔒 Admin Access
+            </Link>
+            <button
+              onClick={() => handleClick("#contact")}
+              className="btn-primary-glow px-4 py-2 rounded-full text-xs font-bold uppercase"
+            >
+              Inquire Now
+            </button>
+          </div>
         </div>
       </div>
     </nav>

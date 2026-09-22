@@ -6,6 +6,7 @@ interface VideoCardProps {
   title: string;
   src: string;
   index: number;
+  category?: string;
   onPlay: (src: string, title: string) => void;
 }
 
@@ -16,7 +17,7 @@ function getCloudinaryPoster(src: string): string | undefined {
     .replace(/\.(mp4|webm|mov)$/i, ".jpg");
 }
 
-export default function VideoCard({ title, src, index, onPlay }: VideoCardProps) {
+export default function VideoCard({ title, src, index, category, onPlay }: VideoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -38,21 +39,13 @@ export default function VideoCard({ title, src, index, onPlay }: VideoCardProps)
   return (
     <div
       ref={cardRef}
-      className={`group relative rounded-2xl overflow-hidden cursor-pointer glass-3d border border-white/5`}
-      style={{
-        transform: isHovering ? "translateY(-8px)" : "translateY(0px)",
-        boxShadow: isHovering
-          ? "inset 0 1px 2px rgba(255, 255, 255, 0.25), inset 0 -1px 2px rgba(0, 0, 0, 0.6), 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.25)"
-          : "inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 1px rgba(0, 0, 0, 0.4), 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 10px 25px -10px rgba(0, 0, 0, 0.5)",
-        transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s",
-        animationDelay: `${index * 0.1}s`,
-      }}
+      className="glass-panel glass-panel-hover rounded-3xl overflow-hidden cursor-pointer group flex flex-col relative border border-white/10"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => onPlay(src, title)}
     >
-      {/* Video Container (Viewfinder view) */}
-      <div className="video-container bg-black/60 overflow-hidden relative scanline">
+      {/* Video Container Frame */}
+      <div className="relative w-full aspect-video bg-black/80 overflow-hidden">
         <video
           ref={videoRef}
           src={src}
@@ -61,73 +54,82 @@ export default function VideoCard({ title, src, index, onPlay }: VideoCardProps)
           loop
           playsInline
           preload="metadata"
-          className="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Viewfinder Target Overlays (Only visible on hover) */}
-        <div className={`absolute inset-0 z-10 p-3 flex flex-col justify-between pointer-events-none transition-opacity duration-300 ${isHovering ? "opacity-100" : "opacity-0"}`}>
-          {/* Top HUD Row */}
-          <div className="flex justify-between items-center text-[9px] font-black tracking-widest text-red-500 bg-black/40 px-2 py-0.5 rounded backdrop-blur-[2px]">
-            <div className="flex items-center gap-1.5">
-              <span className="led-indicator led-red" />
-              <span>● REC</span>
-            </div>
-            <div className="text-white/60">AI.STREAM_RAW</div>
+        {/* Ambient Gloss & Dark Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+        {/* Top HUD Badges */}
+        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none z-10">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[9px] font-black tracking-widest text-cyan-300 uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span>{category || "AI PRODUCTION"}</span>
           </div>
 
-          {/* Center Crosshair Target */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-30">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-400">
-              <path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
-            </svg>
-          </div>
-
-          {/* Bottom HUD Row */}
-          <div className="flex justify-between items-center text-[9px] font-black tracking-widest text-white/50 bg-black/40 px-2 py-0.5 rounded backdrop-blur-[2px]">
-            <div>16:9 SCALE</div>
-            <div className="text-cyan-400">FPS 24.00</div>
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[9px] font-bold text-white/70">
+            <span>4K HDR</span>
           </div>
         </div>
 
-        {/* Gloss overlay to simulate high-end glass screen */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none mix-blend-overlay z-10" />
-
-        {/* Ambient bottom light overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent z-10" />
-
-        {/* Tactile 3D Play button */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center z-20 transition-all duration-300 ${
-            isHovering
-              ? "opacity-100 scale-100"
-              : "opacity-80 scale-90 sm:opacity-0 sm:scale-75"
-          }`}
-        >
-          <div className="w-16 h-16 rounded-full bg-gradient-to-b from-white/15 to-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),_0_8px_16px_rgba(0,0,0,0.5)] group-hover:from-white/25 group-hover:to-white/10 transition-all duration-300">
+        {/* Center Hover Play Icon */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+          <div
+            className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 flex items-center justify-center text-white shadow-2xl transition-all duration-300 ${
+              isHovering ? "scale-110 bg-white/25 shadow-[0_0_30px_rgba(139,92,246,0.6)]" : "scale-90 opacity-70 sm:opacity-0"
+            }`}
+          >
             <svg
-              width="22"
-              height="22"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="white"
-              className="ml-1 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+              className="ml-1 filter drop-shadow-md"
             >
               <polygon points="5,3 19,12 5,21" />
             </svg>
           </div>
         </div>
+
+        {/* Bottom Soundwave Indicator on Hover */}
+        <div
+          className={`absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-[10px] font-black uppercase text-white/70 transition-opacity duration-300 pointer-events-none z-10 ${
+            isHovering ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="flex items-center gap-1.5 bg-black/60 px-2 py-0.5 rounded-full border border-white/10">
+            <div className="flex gap-0.5 items-end h-2.5">
+              <span className="w-0.5 bg-cyan-400 rounded-full soundbar-anim" style={{ animationDelay: "0.1s" }} />
+              <span className="w-0.5 bg-violet-400 rounded-full soundbar-anim" style={{ animationDelay: "0.3s" }} />
+              <span className="w-0.5 bg-cyan-400 rounded-full soundbar-anim" style={{ animationDelay: "0.5s" }} />
+            </div>
+            <span className="text-[8px] tracking-widest text-cyan-300">LIVE PREVIEW</span>
+          </div>
+
+          <span className="bg-black/60 px-2 py-0.5 rounded-full border border-white/10 text-[8px] tracking-widest text-white/80">
+            CLICK TO EXPAND
+          </span>
+        </div>
       </div>
 
-      {/* Title bar - styled like a tactile LED label or physical metal plate */}
-      <div className="relative z-20 p-4 bg-gradient-to-b from-neutral-900/60 to-neutral-950/90 border-t border-white/5">
-        <h3 className="font-[family-name:var(--font-outfit)] font-black text-white text-sm sm:text-base tracking-wide truncate">
-          {title}
-        </h3>
-        <div className="flex items-center gap-2 mt-1.5">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isHovering ? "bg-violet-400" : "bg-neutral-500"}`}></span>
-            <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${isHovering ? "bg-violet-500" : "bg-neutral-600"}`}></span>
-          </span>
-          <span className="text-[10px] text-white/50 tracking-wider font-semibold uppercase">Preview Stream Available</span>
+      {/* Card Footer Bar */}
+      <div className="p-4 sm:p-5 flex items-center justify-between bg-neutral-950/90 border-t border-white/10 relative z-20">
+        <div className="flex flex-col min-w-0 pr-3">
+          <h3 className="font-[family-name:var(--font-outfit)] font-black text-white text-sm sm:text-base tracking-wide truncate group-hover:text-cyan-300 transition-colors">
+            {title}
+          </h3>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] text-white/40 uppercase font-semibold tracking-wider truncate">
+              Diffusion FX • Color Mastered
+            </span>
+          </div>
+        </div>
+
+        <div className="w-8 h-8 rounded-full border border-white/15 bg-white/[0.04] flex items-center justify-center text-white/60 group-hover:text-white group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300 shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M7 17L17 7M17 7H7M17 7V17" />
+          </svg>
         </div>
       </div>
     </div>
