@@ -80,13 +80,15 @@ switch ($method) {
                     $grouped[$slug] = [];
                 }
                 $grouped[$slug][] = [
-                    'id'          => (int)$proj['id'],
-                    'title'       => $proj['title'],
-                    'src'         => $proj['video_src'],
-                    'thumbnail'   => $proj['thumbnail_src'],
-                    'description' => $proj['description'],
-                    'tools_used'  => $proj['tools_used'],
-                    'is_featured' => (bool)$proj['is_featured']
+                    'id'               => (int)$proj['id'],
+                    'title'            => $proj['title'],
+                    'src'              => $proj['video_src'],
+                    'thumbnail'        => $proj['thumbnail_src'],
+                    'description'      => $proj['description'],
+                    'tools_used'       => $proj['tools_used'],
+                    'aspect_ratio'     => $proj['aspect_ratio'] ?? '16:9',
+                    'duration_seconds' => (int)($proj['duration_seconds'] ?? 0),
+                    'is_featured'      => (bool)$proj['is_featured']
                 ];
             }
             jsonResponse(true, 'Projects retrieved successfully', $grouped);

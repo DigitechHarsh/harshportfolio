@@ -33,11 +33,10 @@ export default function Footer() {
           <div className="md:col-span-3 flex flex-col gap-3">
             <div className="text-[10px] font-black uppercase tracking-widest text-white/35 mb-1">Navigation</div>
             {[
-              { label: "Home",               href: "#hero"       },
-              { label: "AI Commercials",     href: "#ai-ads"     },
-              { label: "Cinematic Teasers",  href: "#ai-teasers" },
-              { label: "Creative Stack",     href: "#tools"      },
-              { label: "Commission Work",    href: "#contact"    },
+              { label: "Home",             href: "#hero"      },
+              { label: "Video Showcase",   href: "#showcase"  },
+              { label: "Creative Stack",   href: "#tools"     },
+              { label: "Commission Work",  href: "#contact"   },
             ].map(l => (
               <a key={l.label} href={l.href} className="text-sm text-white/55 hover:text-cyan-300 transition-colors font-medium">
                 {l.label}

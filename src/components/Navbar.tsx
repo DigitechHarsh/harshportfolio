@@ -5,11 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: "Home",         href: "#hero" },
-  { label: "Commercials",  href: "#ai-ads" },
-  { label: "Teasers",      href: "#ai-teasers" },
-  { label: "Stack",        href: "#tools" },
-  { label: "Contact",      href: "#contact" },
+  { label: "Home",      href: "#hero" },
+  { label: "Showcase",  href: "#showcase" },
+  { label: "Pipeline",  href: "#tools" },
+  { label: "Contact",   href: "#contact" },
 ];
 
 export default function Navbar() {

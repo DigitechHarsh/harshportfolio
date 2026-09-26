@@ -16,6 +16,8 @@ export interface ProjectData {
   thumbnail?: string;
   description?: string;
   tools_used?: string;
+  aspect_ratio?: "16:9" | "9:16" | string;
+  duration_seconds?: number;
   is_featured?: boolean;
 }
 
