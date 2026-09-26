@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import VideoCard from "./VideoCard";
 import Lightbox from "./Lightbox";
 
@@ -12,152 +12,90 @@ export interface VideoItem {
 
 interface VideoGalleryProps {
   id: string;
-  sectionTitle: string;
-  sectionSubtitle: string;
-  accentColor: "violet" | "cyan";
+  title: string;
+  subtitle: string;
+  accent: "violet" | "cyan";
   videos: VideoItem[];
 }
 
-export default function VideoGallery({
-  id,
-  sectionTitle,
-  sectionSubtitle,
-  accentColor,
-  videos,
-}: VideoGalleryProps) {
-  const [lightbox, setLightbox] = useState<{
-    src: string;
-    title: string;
-  } | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [filterQuery, setFilterQuery] = useState("");
+export default function VideoGallery({ id, title, subtitle, accent, videos }: VideoGalleryProps) {
+  const [lightbox, setLightbox] = useState<{ src: string; title: string } | null>(null);
+  const [query, setQuery] = useState("");
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const filtered = videos.filter(v => v.title.toLowerCase().includes(query.toLowerCase()));
 
-  const filteredVideos = videos.filter((v) =>
-    v.title.toLowerCase().includes(filterQuery.toLowerCase())
-  );
-
-  const gradientMap = {
-    violet: "from-violet-500 via-indigo-500 to-cyan-500",
-    cyan: "from-cyan-400 via-teal-500 to-emerald-500",
-  };
-
-  const glowMap = {
-    violet: "rgba(139, 92, 246, 0.18)",
-    cyan: "rgba(6, 182, 212, 0.18)",
-  };
+  const glow = accent === "violet"
+    ? "radial-gradient(circle, rgba(124,58,237,0.14) 0%, transparent 65%)"
+    : "radial-gradient(circle, rgba(8,145,178,0.14) 0%, transparent 65%)";
 
   return (
     <>
       <section
         id={id}
-        ref={sectionRef}
-        className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28"
+        className="relative py-24 sm:py-32 scroll-mt-24"
       >
-        {/* Ambient Radial Background Glow */}
+        {/* Ambient glow */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full pointer-events-none"
-          style={{
-            background: `radial-gradient(circle, ${glowMap[accentColor]} 0%, transparent 65%)`,
-          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
+          style={{ background: glow }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
-          
-          {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            {/* Pill Tag */}
-            <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] backdrop-blur-md">
-              <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${gradientMap[accentColor]}`}></span>
-              <span className="text-[10px] font-black tracking-widest uppercase text-white/60">
-                PORTFOLIO SHOWCASE
-              </span>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10">
+
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full glass">
+              <span className={`w-2 h-2 rounded-full ${accent === "violet" ? "bg-violet-400" : "bg-cyan-400"}`} />
+              <span className="text-[10px] font-black tracking-widest uppercase text-white/50">Portfolio Showcase</span>
             </div>
 
-            {/* Title */}
-            <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4">
-              <span className="gradient-text-hero">{sectionTitle}</span>
+            <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl font-black text-white mb-3">
+              <span className="gradient-heading">{title}</span>
             </h2>
-            
-            {/* Subtitle */}
-            <p className="text-white/60 text-base sm:text-lg font-medium leading-relaxed">
-              {sectionSubtitle}
-            </p>
+            <p className="text-white/55 text-base sm:text-lg leading-relaxed">{subtitle}</p>
 
-            {/* Quick search filter for this section */}
-            {videos.length > 6 && (
-              <div className="mt-6 flex justify-center">
-                <div className="relative w-full max-w-xs">
-                  <input
-                    type="text"
-                    value={filterQuery}
-                    onChange={(e) => setFilterQuery(e.target.value)}
-                    placeholder="Search projects..."
-                    className="w-full px-4 py-2 pl-9 rounded-full bg-neutral-900/80 border border-white/10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-cyan-400/50 transition-colors shadow-inner"
-                  />
-                  <svg
-                    className="absolute left-3 top-2.5 text-white/40"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="M21 21l-4.35-4.35" />
-                  </svg>
-                  {filterQuery && (
-                    <button
-                      onClick={() => setFilterQuery("")}
-                      className="absolute right-3 top-2 text-white/40 hover:text-white text-xs cursor-pointer"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
+            {/* Search */}
+            <div className="mt-6 relative max-w-xs mx-auto">
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search projects…"
+                className="w-full pl-9 pr-4 py-2.5 rounded-full glass text-xs text-white placeholder-white/35 focus:outline-none border border-white/[0.09] focus:border-violet-500/40 transition-colors"
+              />
+              <svg className="absolute left-3 top-3 text-white/35" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+              </svg>
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  className="absolute right-3 top-2.5 text-white/40 hover:text-white text-xs cursor-pointer"
+                >✕</button>
+              )}
+            </div>
           </div>
 
-          {/* Video Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {filteredVideos.map((video, i) => (
-              <div key={`${video.src}-${i}`}>
+          {/* Grid */}
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+              {filtered.map((video, i) => (
                 <VideoCard
+                  key={`${video.src}-${i}`}
                   title={video.title}
                   src={video.src}
-                  index={i}
                   category={id === "ai-ads" ? "AI ADVERT" : "CONCEPT FILM"}
-                  onPlay={(src, title) => setLightbox({ src, title })}
+                  onPlay={(s, t) => setLightbox({ src: s, title: t })}
                 />
-              </div>
-            ))}
-          </div>
-
-          {filteredVideos.length === 0 && (
-            <div className="text-center py-12 text-white/40 text-sm">
-              No matching projects found for &quot;{filterQuery}&quot;
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 text-white/35 text-sm">
+              No projects matching &quot;{query}&quot;
             </div>
           )}
         </div>
       </section>
 
-      {/* Cinematic Modal Lightbox */}
       {lightbox && (
         <Lightbox
           src={lightbox.src}

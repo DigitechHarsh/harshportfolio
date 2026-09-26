@@ -9,77 +9,56 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ src, title, onClose }: LightboxProps) {
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    },
-    [onClose]
-  );
+  const handleKey = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") onClose();
+  }, [onClose]);
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
     };
-  }, [handleKeyDown]);
+  }, [handleKey]);
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center lightbox-backdrop bg-black/90 p-4 sm:p-6"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/92 backdrop-blur-sm p-4 sm:p-8"
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* Close button */}
+      {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 sm:top-6 sm:right-6 z-[110] w-11 h-11 rounded-full glass-strong flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 group"
-        aria-label="Close lightbox"
+        className="absolute top-5 right-5 z-[210] w-10 h-10 rounded-full glass flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+        aria-label="Close"
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="transition-transform duration-300 group-hover:rotate-90"
-        >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg>
       </button>
 
-      {/* Video Container */}
-      <div className="relative w-full max-w-5xl flex flex-col items-center animate-scale-in">
+      <div className="w-full max-w-4xl flex flex-col gap-3">
         {/* Title */}
-        <div className="mb-3 flex items-center gap-3 self-start sm:self-center">
-          <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-500 to-cyan-500" />
-          <h3 className="font-[family-name:var(--font-outfit)] text-lg sm:text-xl font-bold text-white tracking-wide">
-            {title}
-          </h3>
+        <div className="flex items-center gap-2">
+          <span className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-500 to-cyan-500 shrink-0" />
+          <h3 className="font-[family-name:var(--font-outfit)] text-lg font-bold text-white">{title}</h3>
         </div>
 
         {/* Player */}
-        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(139,92,246,0.25)] bg-black max-h-[78vh] flex items-center justify-center">
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-black shadow-[0_0_60px_rgba(124,58,237,0.2)]">
           <video
             src={src}
             controls
             autoPlay
             playsInline
-            className="max-h-[75vh] w-auto max-w-full rounded-xl object-contain bg-black"
+            className="w-full max-h-[75vh] object-contain bg-black"
             controlsList="nodownload"
           />
         </div>
 
-        {/* Hint */}
-        <p className="text-center text-xs text-white/40 mt-3">
-          Press{" "}
-          <kbd className="px-2 py-0.5 rounded bg-white/10 border border-white/10 text-white/60 text-xs">
-            Esc
-          </kbd>{" "}
-          or click background to close
+        <p className="text-center text-xs text-white/30">
+          Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white/50 text-[10px] font-mono">Esc</kbd> or click outside to close
         </p>
       </div>
     </div>

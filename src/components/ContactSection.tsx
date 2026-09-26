@@ -3,301 +3,190 @@
 import { useState } from "react";
 import { submitContactInquiry } from "@/lib/api";
 
+const SERVICES  = ["AI Commercial Ad", "Cinematic Teaser & Film", "3D Product Visuals", "AI Music Video / VFX", "Full Campaign Package"];
+const BUDGETS   = ["₹20k – ₹50k", "₹50k – ₹1.5L", "₹1.5L – ₹3.5L", "₹3.5L+ (Enterprise)"];
+
 export default function ContactSection() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [service, setService] = useState("AI Commercial Ad");
-  const [budget, setBudget] = useState("₹50k - ₹1.5L");
+  const [name,    setName]    = useState("");
+  const [email,   setEmail]   = useState("");
+  const [phone,   setPhone]   = useState("");
+  const [service, setService] = useState(SERVICES[0]);
+  const [budget,  setBudget]  = useState(BUDGETS[1]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [status,  setStatus]  = useState<{ ok: boolean; msg: string } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setStatusMsg(null);
-
-    const fullMessage = `Service: ${service}\nBudget: ${budget}\n\n${message}`;
+    setStatus(null);
     const res = await submitContactInquiry({
-      name,
-      email,
-      phone,
+      name, email, phone,
       subject: service,
-      message: fullMessage,
+      message: `Service: ${service}\nBudget: ${budget}\n\n${message}`,
     });
-
     setLoading(false);
     if (res.success) {
-      setStatusMsg({
-        type: "success",
-        text: "Thank you! Your project inquiry has been received. Harsh Patel will get back to you within 24 hours.",
-      });
-      setName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
+      setStatus({ ok: true, msg: "Thank you! Harsh Patel will respond within 24 hours." });
+      setName(""); setEmail(""); setPhone(""); setMessage("");
     } else {
-      setStatusMsg({
-        type: "error",
-        text: res.message || "Something went wrong. Please reach out directly on WhatsApp or Email.",
-      });
+      setStatus({ ok: false, msg: res.message || "Something went wrong. Please reach out on WhatsApp." });
     }
   };
 
+  const inputCls = "w-full px-4 py-3 rounded-xl bg-neutral-900/80 border border-white/[0.09] text-white text-sm placeholder-white/30 focus:outline-none focus:border-violet-500/50 transition-colors";
+
   return (
-    <section id="contact" className="relative py-28 sm:py-36 overflow-hidden scroll-mt-28">
-      {/* Background Glow */}
+    <section id="contact" className="relative py-24 sm:py-32 scroll-mt-24">
+      {/* Glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full pointer-events-none opacity-20"
-        style={{
-          background: "radial-gradient(circle, rgba(6,182,212,0.3) 0%, transparent 65%)",
-        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none opacity-15"
+        style={{ background: "radial-gradient(circle, rgba(8,145,178,0.4) 0%, transparent 65%)" }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span className="text-[10px] font-black tracking-widest uppercase text-white/60">
-              COMMISSION A PRODUCTION
-            </span>
-          </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10">
 
-          <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">
-            Let&apos;s Build <span className="gradient-text-hero">Something Epic</span>
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full glass">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="text-[10px] font-black tracking-widest uppercase text-white/50">Commission a Production</span>
+          </div>
+          <h2 className="font-[family-name:var(--font-outfit)] text-4xl sm:text-5xl font-black text-white mb-3">
+            Let&apos;s Build <span className="gradient-heading">Something Epic</span>
           </h2>
-          <p className="text-white/60 text-base sm:text-lg font-medium leading-relaxed">
-            Have a commercial campaign, concept trailer, or brand vision in mind? Let&apos;s turn your ideas into cinematic AI masterpieces.
+          <p className="text-white/55 text-base sm:text-lg leading-relaxed">
+            Have a campaign, teaser, or brand vision? Let&apos;s turn your ideas into cinematic AI masterpieces.
           </p>
         </div>
 
-        {/* 2-Column Luxury Layout */}
-        <div className="grid lg:grid-cols-12 gap-8 xl:gap-12 items-start">
-          
-          {/* Left Column (5 cols): Direct Contacts & WhatsApp Fast Lane */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
-            
-            {/* WhatsApp Quick Chat Highlight Card */}
+        <div className="grid lg:grid-cols-12 gap-10">
+
+          {/* Left — contacts */}
+          <div className="lg:col-span-4 flex flex-col gap-5">
+
+            {/* WhatsApp card */}
             <a
-              href="https://wa.me/918160587315?text=Hi%20Harsh,%20I'm%20interested%20in%20an%20AI%20video%20production%20project!"
+              href="https://wa.me/918160587315?text=Hi%20Harsh,%20I'm%20interested%20in%20an%20AI%20video%20project!"
               target="_blank"
               rel="noopener noreferrer"
-              className="glass-panel p-6 sm:p-7 rounded-3xl border border-emerald-500/30 hover:border-emerald-400/60 transition-all duration-300 group shadow-2xl relative overflow-hidden"
+              className="glass rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-400/40 transition-all duration-300 hover:-translate-y-1 group block"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl">
-                  💬
-                </div>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black tracking-wider uppercase border border-emerald-500/40 animate-pulse">
-                  FASTEST RESPONSE
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl">💬</div>
+                <span className="text-[9px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 animate-pulse">
+                  Fastest
                 </span>
               </div>
-              <h3 className="font-[family-name:var(--font-outfit)] text-xl font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
-                Chat Directly on WhatsApp
+              <h3 className="font-[family-name:var(--font-outfit)] text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                Chat on WhatsApp
               </h3>
-              <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-medium mb-3">
-                Need immediate quotes, script breakdowns, or urgent project deliveries?
-              </p>
-              <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                <span>+91 81605 87315</span>
-                <span>→</span>
-              </div>
+              <p className="text-xs text-white/45 mt-1 mb-3">Immediate quotes, script breakdowns, urgent deliveries.</p>
+              <div className="text-sm font-bold text-emerald-400">+91 81605 87315 →</div>
             </a>
 
-            {/* Email Card */}
-            <div className="glass-panel p-6 rounded-3xl border border-white/10 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 text-2xl shrink-0">
-                ✉️
-              </div>
+            {/* Email card */}
+            <div className="glass rounded-2xl p-5 border border-white/[0.09] flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-xl shrink-0">✉️</div>
               <div className="min-w-0">
-                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
-                  OFFICIAL INQUIRY
-                </div>
-                <a
-                  href="mailto:aicreationsbyharsh@gmail.com"
-                  className="font-bold text-sm sm:text-base text-white hover:text-cyan-300 transition-colors truncate block"
-                >
+                <p className="text-[10px] font-bold text-white/35 uppercase tracking-wider">Official Inquiry</p>
+                <a href="mailto:aicreationsbyharsh@gmail.com" className="font-bold text-sm text-white hover:text-cyan-300 transition-colors truncate block">
                   aicreationsbyharsh@gmail.com
                 </a>
               </div>
             </div>
 
-            {/* Location & Turnaround Badge */}
-            <div className="glass-panel p-6 rounded-3xl border border-white/10 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-2xl shrink-0">
-                🌍
-              </div>
+            {/* Location card */}
+            <div className="glass rounded-2xl p-5 border border-white/[0.09] flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-xl shrink-0">🌍</div>
               <div>
-                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
-                  STUDIO LOCATION &amp; TURNAROUND
-                </div>
-                <div className="font-bold text-sm text-white">
-                  Surat, Gujarat, India • Global 24/7 Delivery
-                </div>
+                <p className="text-[10px] font-bold text-white/35 uppercase tracking-wider">Studio Location</p>
+                <p className="font-bold text-sm text-white">Surat, Gujarat, India</p>
+                <p className="text-xs text-white/40">Global 24/7 Delivery</p>
               </div>
             </div>
           </div>
 
-          {/* Right Column (7 cols): Full Project Inquiry Form */}
-          <div className="lg:col-span-7">
+          {/* Right — form */}
+          <div className="lg:col-span-8">
             <form
               onSubmit={handleSubmit}
-              className="glass-panel p-6 sm:p-10 rounded-3xl border border-white/15 shadow-2xl flex flex-col gap-6"
+              className="glass rounded-2xl p-6 sm:p-9 border border-white/[0.09] flex flex-col gap-6"
             >
-              <div className="border-b border-white/10 pb-4">
-                <h3 className="font-[family-name:var(--font-outfit)] text-xl sm:text-2xl font-black text-white">
-                  Project Briefing Form
-                </h3>
-                <p className="text-xs sm:text-sm text-white/50 font-medium mt-1">
-                  Fill out your details below to receive a personalized proposal and timeline.
-                </p>
+              <div className="border-b border-white/[0.07] pb-4">
+                <h3 className="font-[family-name:var(--font-outfit)] text-xl font-black text-white">Project Briefing Form</h3>
+                <p className="text-xs text-white/40 mt-1">Fill out the details below to receive a personalized proposal.</p>
               </div>
 
-              {/* Service Selection Chips */}
+              {/* Service chips */}
               <div>
-                <label className="block text-xs font-black text-white/60 uppercase tracking-wider mb-2.5">
-                  I Am Interested In:
-                </label>
+                <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-2.5">Service *</label>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    "AI Commercial Ad",
-                    "Cinematic Teaser & Film",
-                    "3D Product Visuals",
-                    "AI Music Video / VFX",
-                    "Full Campaign Package",
-                  ].map((srv) => (
+                  {SERVICES.map(s => (
                     <button
-                      type="button"
-                      key={srv}
-                      onClick={() => setService(srv)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-300 cursor-pointer ${
-                        service === srv
+                      key={s} type="button" onClick={() => setService(s)} className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide cursor-pointer transition-all ${
+                        service === s
                           ? "bg-gradient-to-r from-violet-600 to-cyan-500 text-white border border-white/20 shadow-md"
-                          : "bg-white/[0.03] text-white/60 border border-white/10 hover:border-white/20 hover:text-white"
+                          : "bg-white/[0.04] text-white/55 border border-white/10 hover:border-white/20 hover:text-white"
                       }`}
-                    >
-                      {srv}
-                    </button>
+                    >{s}</button>
                   ))}
                 </div>
               </div>
 
-              {/* Budget Range Selection Chips */}
+              {/* Budget chips */}
               <div>
-                <label className="block text-xs font-black text-white/60 uppercase tracking-wider mb-2.5">
-                  Estimated Budget Range:
-                </label>
+                <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-2.5">Budget Range *</label>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    "₹20k - ₹50k",
-                    "₹50k - ₹1.5L",
-                    "₹1.5L - ₹3.5L",
-                    "₹3.5L+ (Enterprise)",
-                  ].map((bg) => (
+                  {BUDGETS.map(b => (
                     <button
-                      type="button"
-                      key={bg}
-                      onClick={() => setBudget(bg)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-300 cursor-pointer ${
-                        budget === bg
-                          ? "bg-white/20 text-white border border-white/30 shadow-md"
-                          : "bg-white/[0.03] text-white/60 border border-white/10 hover:border-white/20 hover:text-white"
+                      key={b} type="button" onClick={() => setBudget(b)} className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide cursor-pointer transition-all ${
+                        budget === b
+                          ? "bg-white/20 text-white border border-white/30"
+                          : "bg-white/[0.04] text-white/55 border border-white/10 hover:border-white/20 hover:text-white"
                       }`}
-                    >
-                      {bg}
-                    </button>
+                    >{b}</button>
                   ))}
                 </div>
               </div>
 
-              {/* Name & Email Fields */}
+              {/* Name + Email */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
-                    Your Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. John Doe / Brand Manager"
-                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
-                  />
+                  <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">Your Name *</label>
+                  <input type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="john@company.com"
-                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
-                  />
+                  <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">Email *</label>
+                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="john@company.com" className={inputCls} />
                 </div>
               </div>
 
-              {/* Phone Field */}
+              {/* Phone */}
               <div>
-                <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
-                  Phone / WhatsApp (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors"
-                />
+                <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">Phone / WhatsApp</label>
+                <input type="text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 98765 43210" className={inputCls} />
               </div>
 
-              {/* Message Field */}
+              {/* Message */}
               <div>
-                <label className="block text-xs font-bold text-white/60 uppercase tracking-wider mb-1.5">
-                  Project Details / Vision *
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe your product, target audience, reference style or key timeline goals..."
-                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400/50 transition-colors resize-none"
-                />
+                <label className="block text-[10px] font-black text-white/50 uppercase tracking-widest mb-1.5">Project Vision *</label>
+                <textarea rows={4} required value={message} onChange={e => setMessage(e.target.value)} placeholder="Describe your product, audience, style references, timeline…" className={`${inputCls} resize-none`} />
               </div>
 
-              {/* Feedback Status Alert */}
-              {statusMsg && (
-                <div
-                  className={`p-4 rounded-2xl text-xs font-bold ${
-                    statusMsg.type === "success"
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                      : "bg-red-500/20 text-red-300 border border-red-500/40"
-                  }`}
-                >
-                  {statusMsg.text}
+              {/* Status */}
+              {status && (
+                <div className={`p-4 rounded-xl text-xs font-bold border ${status.ok ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" : "bg-red-500/15 text-red-300 border-red-500/30"}`}>
+                  {status.msg}
                 </div>
               )}
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary-glow w-full py-4 rounded-full text-xs font-black tracking-widest uppercase cursor-pointer shadow-xl disabled:opacity-50"
-              >
-                {loading ? "Sending Brief..." : "Submit Project Brief →"}
+              <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
+                {loading ? "Sending…" : "Submit Project Brief →"}
               </button>
             </form>
           </div>
-
         </div>
-
       </div>
     </section>
   );

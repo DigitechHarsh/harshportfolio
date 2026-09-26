@@ -4,107 +4,77 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "AI Commercials", href: "#ai-ads" },
-  { label: "Teasers & Films", href: "#ai-teasers" },
-  { label: "Creative Stack", href: "#tools" },
-  { label: "Contact", href: "#contact" },
+const NAV_LINKS = [
+  { label: "Home",         href: "#hero" },
+  { label: "Commercials",  href: "#ai-ads" },
+  { label: "Teasers",      href: "#ai-teasers" },
+  { label: "Stack",        href: "#tools" },
+  { label: "Contact",      href: "#contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("#hero");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [active,   setActive]   = useState("#hero");
+  const [open,     setOpen]     = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
 
-      const isAtBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 120;
-      if (isAtBottom) {
-        setActive("#contact");
-        return;
-      }
+      const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100;
+      if (bottom) { setActive("#contact"); return; }
 
-      const sections = ["hero", "ai-ads", "ai-teasers", "tools", "contact"];
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 160) {
-            setActive(`#${sections[i]}`);
-            break;
-          }
+      for (const { href } of [...NAV_LINKS].reverse()) {
+        const el = document.getElementById(href.slice(1));
+        if (el && el.getBoundingClientRect().top <= 140) {
+          setActive(href);
+          return;
         }
       }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleClick = (href: string) => {
+  const goto = (href: string) => {
     setActive(href);
-    setMenuOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <nav
-      className={`floating-navbar px-4 sm:px-6 py-2.5 flex items-center justify-between border transition-all duration-500 ${
-        scrolled
-          ? "bg-neutral-950/80 border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9),_inset_0_1px_1px_rgba(255,255,255,0.15)] top-3"
-          : "bg-neutral-950/40 border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] top-5"
-      }`}
-    >
-      {/* Brand Logo */}
+    <nav className={`navbar px-5 sm:px-7 py-3 flex items-center justify-between ${scrolled ? "scrolled" : ""}`}>
+      {/* Brand */}
       <a
         href="#hero"
-        onClick={(e) => {
-          e.preventDefault();
-          handleClick("#hero");
-        }}
-        className="flex items-center gap-3 group cursor-pointer"
+        onClick={e => { e.preventDefault(); goto("#hero"); }}
+        className="flex items-center gap-2.5 group"
       >
-        <div className="relative w-9 h-9 overflow-hidden rounded-xl border border-white/15 shadow-md bg-neutral-900 group-hover:border-violet-400/50 transition-all duration-300">
-          <Image
-            src="/logo.png"
-            alt="Harsh AI Creations"
-            fill
-            sizes="36px"
-            className="object-contain p-1"
-            priority
-          />
+        <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-white/15 bg-neutral-900 shrink-0">
+          <Image src="/logo.png" alt="Logo" fill sizes="32px" className="object-contain p-1" priority />
         </div>
-        <div className="flex flex-col">
-          <span className="font-[family-name:var(--font-outfit)] font-black text-sm sm:text-base tracking-wider bg-gradient-to-r from-white via-neutral-100 to-cyan-300 bg-clip-text text-transparent group-hover:to-violet-400 transition-all duration-300">
+        <div className="leading-none">
+          <div className="font-bold text-sm tracking-widest text-white font-[family-name:var(--font-outfit)] group-hover:text-violet-300 transition-colors">
             HARSH AI
-          </span>
-          <span className="text-[9px] uppercase font-bold tracking-widest text-white/40 -mt-0.5">
-            CREATIONS
-          </span>
+          </div>
+          <div className="text-[9px] tracking-widest text-white/35 uppercase font-semibold">CREATIONS</div>
         </div>
       </a>
 
-      {/* Desktop Navigation Links */}
-      <div className="hidden md:flex items-center gap-1 bg-black/50 p-1.5 rounded-full border border-white/10 shadow-inner">
-        {navLinks.map((link) => {
+      {/* Desktop nav pills */}
+      <div className="hidden md:flex items-center gap-1 bg-black/50 px-1.5 py-1.5 rounded-full border border-white/[0.07]">
+        {NAV_LINKS.map(link => {
           const isActive = active === link.href;
           return (
             <button
               key={link.href}
-              onClick={() => handleClick(link.href)}
-              className={`relative px-4 py-1.5 text-xs font-bold tracking-wider uppercase rounded-full transition-all duration-300 cursor-pointer ${
-                isActive
-                  ? "text-white shadow-sm"
-                  : "text-white/50 hover:text-white/90"
+              onClick={() => goto(link.href)}
+              className={`relative px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wide uppercase transition-colors cursor-pointer ${
+                isActive ? "text-white" : "text-white/50 hover:text-white/80"
               }`}
             >
               {isActive && (
-                <span className="absolute inset-0 bg-gradient-to-r from-violet-600/30 via-indigo-600/30 to-cyan-500/30 rounded-full border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]" />
+                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-600/30 to-cyan-500/30 border border-white/15" />
               )}
               <span className="relative z-10">{link.label}</span>
             </button>
@@ -112,81 +82,57 @@ export default function Navbar() {
         })}
       </div>
 
-      {/* Right Action: Let's Talk CTA & Admin Link */}
+      {/* Right CTA */}
       <div className="hidden sm:flex items-center gap-3">
         <Link
           href="/admin"
-          className="text-[11px] font-bold tracking-wider uppercase text-white/40 hover:text-white/80 transition-colors px-2.5 py-1 rounded-lg hover:bg-white/5"
+          className="text-[11px] font-bold tracking-wider uppercase text-white/35 hover:text-white/70 transition-colors px-2"
         >
           Admin
         </Link>
         <button
-          onClick={() => handleClick("#contact")}
-          className="btn-primary-glow px-5 py-2 rounded-full text-xs font-black tracking-wider uppercase cursor-pointer"
+          onClick={() => goto("#contact")}
+          className="btn-primary !py-2 !px-5 text-[11px]"
         >
           Let&apos;s Talk
         </button>
       </div>
 
-      {/* Mobile Hamburger */}
+      {/* Hamburger */}
       <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="md:hidden relative w-9 h-9 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-full bg-white/5 border border-white/10"
-        aria-label="Toggle menu"
+        onClick={() => setOpen(!open)}
+        className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-full bg-white/[0.06] border border-white/[0.08]"
+        aria-label="Menu"
       >
-        <span
-          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
-            menuOpen ? "rotate-45 translate-y-2" : ""
-          }`}
-        />
-        <span
-          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
-            menuOpen ? "opacity-0" : ""
-          }`}
-        />
-        <span
-          className={`w-4 h-0.5 bg-white transition-all duration-300 ${
-            menuOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
-        />
+        <span className={`w-4 h-0.5 bg-white rounded transition-all ${open ? "rotate-45 translate-y-[7px]" : ""}`} />
+        <span className={`w-4 h-0.5 bg-white rounded transition-all ${open ? "opacity-0" : ""}`} />
+        <span className={`w-4 h-0.5 bg-white rounded transition-all ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
       </button>
 
-      {/* Mobile Dropdown Menu */}
-      <div
-        className={`md:hidden absolute top-full left-0 right-0 overflow-hidden transition-all duration-400 rounded-3xl mt-3 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.95)] ${
-          menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="p-4 flex flex-col gap-2 bg-neutral-950/95 backdrop-blur-3xl">
-          {navLinks.map((link) => (
+      {/* Mobile menu */}
+      {open && (
+        <div className="md:hidden absolute top-[calc(100%+12px)] left-0 right-0 rounded-3xl border border-white/12 bg-neutral-950/95 backdrop-blur-2xl p-4 shadow-2xl flex flex-col gap-2">
+          {NAV_LINKS.map(link => (
             <button
               key={link.href}
-              onClick={() => handleClick(link.href)}
-              className={`text-left px-4 py-3 rounded-2xl text-sm font-bold tracking-wide transition-all duration-300 ${
+              onClick={() => goto(link.href)}
+              className={`text-left px-4 py-3 rounded-2xl text-sm font-bold tracking-wide transition-all cursor-pointer ${
                 active === link.href
-                  ? "text-white bg-gradient-to-r from-violet-600/30 to-cyan-500/30 border border-white/20"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                  ? "text-white bg-white/[0.07] border border-white/15"
+                  : "text-white/50 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               {link.label}
             </button>
           ))}
-          <div className="pt-2 flex items-center justify-between border-t border-white/10 mt-1 px-2">
-            <Link
-              href="/admin"
-              className="text-xs font-bold text-white/50 hover:text-white"
-            >
-              🔒 Admin Access
-            </Link>
-            <button
-              onClick={() => handleClick("#contact")}
-              className="btn-primary-glow px-4 py-2 rounded-full text-xs font-bold uppercase"
-            >
+          <div className="flex items-center justify-between pt-2 border-t border-white/[0.07] mt-1 px-1">
+            <Link href="/admin" className="text-xs font-bold text-white/40">🔒 Admin</Link>
+            <button onClick={() => goto("#contact")} className="btn-primary !py-2 !px-4 text-[10px]">
               Inquire Now
             </button>
           </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
