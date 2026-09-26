@@ -186,7 +186,7 @@ export default function Hero() {
                 {/* Profile Portrait (Harsh Patel) */}
                 <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 shadow-inner group">
                   <Image
-                    src="/harsh2.jpeg"
+                    src="/harsh_director.jpg"
                     alt="Harsh Patel — AI Video Director & VFX Artist"
                     fill
                     unoptimized
@@ -195,8 +195,8 @@ export default function Hero() {
                   />
 
                   {/* Gradient overlays for cinematic depth */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/15 via-transparent to-cyan-500/15 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/10 via-transparent to-cyan-500/10 pointer-events-none" />
 
                   {/* Overlay Name Banner */}
                   <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
@@ -247,6 +247,29 @@ export default function Hero() {
             </div>
           </div>
 
+        </div>
+      </div>
+
+      {/* Cinematic Marquee Ribbon */}
+      <div className="w-full mt-16 sm:mt-24 border-y border-white/[0.08] bg-black/40 backdrop-blur-md py-3 overflow-hidden select-none">
+        <div className="flex gap-8 whitespace-nowrap animate-marquee">
+          {[
+            "PHOTOREALISTIC AI COMMERCIALS",
+            "CINEMATIC TRAILERS & TEASERS",
+            "4K HDR PRORES MASTERING",
+            "MIDJOURNEY V6 & RUNWAY GEN-3",
+            "KLING AI & LUMA DREAM MACHINE",
+            "NEURAL VFX & SPATIAL AUDIO",
+            "ADOBE PREMIERE & DAVINCI COLOR",
+            "PHOTOREALISTIC AI COMMERCIALS",
+            "CINEMATIC TRAILERS & TEASERS",
+            "4K HDR PRORES MASTERING",
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-4 text-xs font-mono font-bold tracking-widest text-white/50 uppercase">
+              <span className="text-cyan-400">&bull;</span>
+              <span>{item}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

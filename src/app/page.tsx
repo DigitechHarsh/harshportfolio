@@ -301,6 +301,19 @@ export default function Home() {
       <ToolsSection />
       <ContactSection />
       <Footer />
+
+      {/* Floating WhatsApp Quick-Action Pill */}
+      <a
+        href="https://wa.me/918160587315?text=Hi%20Harsh,%20I'm%20interested%20in%20an%20AI%20video%20production!"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Direct WhatsApp with Harsh Patel"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-emerald-500/90 hover:bg-emerald-400 text-white font-bold text-xs tracking-wide shadow-[0_10px_30px_rgba(16,185,129,0.4)] border border-emerald-300/40 backdrop-blur-md transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+      >
+        <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+        <span className="text-base leading-none">💬</span>
+        <span className="hidden sm:inline font-bold">Chat with Harsh</span>
+      </a>
     </main>
   );
 }
