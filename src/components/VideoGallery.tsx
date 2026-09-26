@@ -79,11 +79,7 @@ export default function VideoGallery({
         <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
           
           {/* Section Header */}
-          <div
-            className={`text-center max-w-3xl mx-auto mb-12 sm:mb-16 transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-          >
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
             {/* Pill Tag */}
             <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] backdrop-blur-md">
               <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${gradientMap[accentColor]}`}></span>
@@ -128,7 +124,7 @@ export default function VideoGallery({
                   {filterQuery && (
                     <button
                       onClick={() => setFilterQuery("")}
-                      className="absolute right-3 top-2 text-white/40 hover:text-white text-xs"
+                      className="absolute right-3 top-2 text-white/40 hover:text-white text-xs cursor-pointer"
                     >
                       ✕
                     </button>
@@ -141,15 +137,7 @@ export default function VideoGallery({
           {/* Video Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredVideos.map((video, i) => (
-              <div
-                key={`${video.src}-${i}`}
-                className={`transition-all duration-700 ${
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-                }`}
-                style={{
-                  transitionDelay: `${(i % 6) * 70 + 120}ms`,
-                }}
-              >
+              <div key={`${video.src}-${i}`}>
                 <VideoCard
                   title={video.title}
                   src={video.src}

@@ -123,11 +123,7 @@ export default function ToolsSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
         
         {/* Section Header */}
-        <div
-          className={`text-center max-w-3xl mx-auto mb-16 sm:mb-20 transition-all duration-1000 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-        >
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
           <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02]">
             <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
             <span className="text-[10px] font-black tracking-widest uppercase text-white/60">
