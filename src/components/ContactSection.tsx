@@ -31,7 +31,7 @@ export default function ContactSection() {
     if (res.success) {
       setStatusMsg({
         type: "success",
-        text: "Thank you! Your project inquiry has been received. Harsh will get back to you within 24 hours.",
+        text: "Thank you! Your project inquiry has been received. Harsh Patel will get back to you within 24 hours.",
       });
       setName("");
       setEmail("");

@@ -238,14 +238,14 @@ export default function Hero() {
                 {/* Bottom Overlay Info */}
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
                   <div>
-                    <div className="font-[family-name:var(--font-outfit)] font-black text-sm tracking-wide">
+                    <div className="font-[family-name:var(--font-outfit)] font-black text-sm sm:text-base tracking-wide text-white drop-shadow-md">
                       HARSH PATEL
                     </div>
-                    <div className="text-[10px] text-cyan-300 font-semibold tracking-wider uppercase">
-                      Creative AI Specialist
+                    <div className="text-[10px] text-cyan-300 font-bold tracking-wider uppercase drop-shadow-sm">
+                      AI Video Director &amp; VFX Artist
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/80">
+                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 shadow-lg">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <polygon points="5,3 19,12 5,21" fill="currentColor" />
                     </svg>

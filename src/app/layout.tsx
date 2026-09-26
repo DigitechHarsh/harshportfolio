@@ -16,24 +16,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI Creations by Harsh | AI Video Creator Portfolio",
+  title: "Harsh Patel | AI Video Director & Cinematic VFX Creator",
   description:
-    "Explore a stunning portfolio of AI-generated video ads and cinematic teasers. Crafted with cutting-edge AI tools like Veo 3.1, Flow Omni, Seedance 2.0, and Nano Banana.",
+    "Explore the high-impact portfolio of Harsh Patel — AI Video Director & Cinematic VFX Creator crafting photorealistic commercials, cinematic trailers, and neural visuals with Midjourney, Runway Gen-3, and Kling AI.",
   keywords: [
-    "AI Video",
-    "AI Ads",
+    "Harsh Patel",
+    "AI Video Director",
+    "AI Commercials",
     "AI Teaser",
-    "Video Portfolio",
-    "Veo 3.1",
-    "Flow Omni",
-    "Seedance 2.0",
-    "Nano Banana",
-    "AI Creator",
+    "VFX Artist",
+    "Runway Gen-3",
+    "Midjourney v6",
+    "Kling AI",
+    "Luma Dream Machine",
+    "ElevenLabs",
   ],
-  authors: [{ name: "Harsh" }],
+  authors: [{ name: "Harsh Patel" }],
   openGraph: {
-    title: "AI Creations by Harsh",
-    description: "AI-powered video ads and cinematic teasers portfolio",
+    title: "Harsh Patel | AI Video Director Portfolio",
+    description: "Photorealistic AI Commercials & Cinematic Visual Storytelling by Harsh Patel",
     type: "website",
   },
 };
